@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#0b0f17" />
+  <title>Arzon Ovqat Toshkent — Talabalar va Hamyonbop Tushlik Gidi (TMA)</title>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Leaflet CSS (Xarita rejimi uchun) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <!-- Compiled SASS Stylesheet -->
+  <link rel="stylesheet" href="./css/main.css" />
+</head>
+<body>
+  <!-- Toast Xabarnoma -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- 1. STICKY HEADER & SEARCH + CATEGORY FILTERS -->
+  <header class="header">
+    <div class="header__inner">
+      <div class="header__top">
+        <div class="header__brand">
+          <div class="header__logo" aria-hidden="true">🍲</div>
+          <div class="header__title-wrap">
+            <h1 class="header__title">
+              Arzon Ovqat
+              <span class="header__badge-tma">Toshkent · 216+</span>
+            </h1>
+            <p class="header__subtitle">
+              <span class="header__status-dot"></span>
+              <span id="locationStatusText">🎓 Talabalar shaharchasi (O'zMU/TDTU)</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="header__actions">
+          <button
+            type="button"
+            id="favHeaderBtn"
+            class="header__icon-btn"
+            aria-label="Saqlangan joylar"
+            title="Saqlangan sevimli joylar"
+          >
+            ❤️
+            <span id="favCountBadge" class="header__fav-count" style="display: none;">0</span>
+          </button>
+          <button
+            type="button"
+            id="themeBtn"
+            class="header__icon-btn"
+            aria-label="Mavzuni o'zgartirish"
+            title="Tungi / Kunduzgi rejim"
+          >
+            ☀️
+          </button>
+        </div>
+      </div>
+
+      <!-- Tezkor Qidiruv Inputi -->
+      <div class="search-bar">
+        <div class="search-bar__field">
+          <span class="search-bar__icon" aria-hidden="true">🔍</span>
+          <input
+            type="search"
+            id="searchInput"
+            class="search-bar__input"
+            placeholder="Taom, joy yoki mo'ljal (masalan: osh, lavash, Beruniy, Chilonzor)..."
+            autocomplete="off"
+          />
+          <button
+            type="button"
+            id="searchClearBtn"
+            class="search-bar__clear"
+            aria-label="Qidiruvni tozalash"
+          >
+            ✕
+          </button>
+        </div>
+
+        <button
+          type="button"
+          id="nearQuickBtn"
+          class="search-bar__near-btn"
+          title="3.5 km radiusdagi eng yaqin joylar"
+        >
+          <span>📍</span>
+          <span>Yaqinimda</span>
+        </button>
+      </div>
+
+      <!-- 7 ta Asosiy Kategoriya Filtrlari -->
+      <nav id="categoryStrip" class="category-strip" aria-label="Taom toifalari"></nav>
+    </div>
+  </header>
+
+  <!-- 2. MAIN CONTENT -->
+  <main class="main-content app-shell">
+    <!-- "Menga yaqinlari" (Near Me) Geolocation & Toshkent Presets Bo'limi -->
+    <section class="near-banner" aria-label="Joylashuv va yaqin joylar">
+      <div class="near-banner__top">
+        <div class="near-banner__info">
+          <div class="near-banner__radar" aria-hidden="true">📡</div>
+          <div>
+            <h2 class="near-banner__title">
+              Menga yaqin arzon joylar
+              <span id="coordsTag" class="near-banner__coords-tag">41.3485, 69.2065</span>
+            </h2>
+            <p class="near-banner__desc">
+              Haversine formulasi orqali sizdan har bir oshxonagacha aniq masofa (m / km) hisoblanadi.
+            </p>
+          </div>
+        </div>
+
+        <div class="near-banner__cta-group">
+          <button type="button" id="locateBtn" class="near-banner__locate-btn">
+            📍 GPS orqali aniqlash
+          </button>
+        </div>
+      </div>
+
+      <!-- Tezkor Toshkent Universitet / Metro nuqtalari -->
+      <div id="presetsContainer" class="near-banner__presets"></div>
+    </section>
+
+    <!-- Saralash, Tuman va Narx Chegarasi Paneli -->
+    <section class="controls-bar" aria-label="Saralash va qo'shimcha filtrlar">
+      <div class="controls-bar__filters">
+        <!-- Narx va Masofa bo'yicha saralash -->
+        <div class="controls-bar__select-wrap">
+          <select id="sortSelect" class="controls-bar__select" aria-label="Saralash turi">
+            <option value="price_asc">💰 Narx: Eng arzondan ↑</option>
+            <option value="distance_asc">📍 Masofa: Eng yaqindan ↑</option>
+            <option value="rating_desc">⭐ Reyting: Eng yuqori ↓</option>
+            <option value="price_desc">💎 Narx: Yuqoridan ↓</option>
+          </select>
+          <span class="controls-bar__select-arrow">▼</span>
+        </div>
+
+        <!-- Tuman bo'yicha filtr -->
+        <div class="controls-bar__select-wrap">
+          <select id="districtSelect" class="controls-bar__select" aria-label="Tuman tanlash">
+            <option value="all">📍 Barcha tumanlar</option>
+          </select>
+          <span class="controls-bar__select-arrow">▼</span>
+        </div>
+
+        <!-- Byudjet chegarasi -->
+        <div class="controls-bar__select-wrap">
+          <select id="priceCapSelect" class="controls-bar__select" aria-label="Maksimal narx">
+            <option value="all">💵 Narx: Barchasi (≤ 45k)</option>
+            <option value="20000">🔥 20 000 so'mgacha</option>
+            <option value="25000">🟢 25 000 so'mgacha</option>
+            <option value="30000">⚡ 30 000 so'mgacha</option>
+          </select>
+          <span class="controls-bar__select-arrow">▼</span>
+        </div>
+      </div>
+
+      <div class="controls-bar__meta-row">
+        <div id="resultCount" class="controls-bar__result-count">
+          Topildi: <strong>216 ta</strong> hamyonbop joy
+        </div>
+
+        <div class="controls-bar__view-switch" role="group" aria-label="Ko'rinish rejimi">
+          <button
+            type="button"
+            id="viewListBtn"
+            class="controls-bar__view-btn controls-bar__view-btn--active"
+          >
+            🗂 Ro'yxat
+          </button>
+          <button type="button" id="viewMapBtn" class="controls-bar__view-btn">
+            🗺 Xarita
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. TAOM & LOKATSIYA KARTOCHKALARI GRIDI -->
+    <section id="placesGrid" class="places-grid" aria-live="polite"></section>
+
+    <!-- INTERAKTIV XARITA KO'RINISHI (Leaflet) -->
+    <section id="mapView" class="map-view" aria-label="Toshkent arzon ovqatlar xaritasi">
+      <div id="mapCanvas" class="map-view__canvas"></div>
+      <div class="map-view__legend">
+        <span>🔵 Ko'k nuqta — Sizning joylashuvingiz</span>
+        <span>🟢 Yashil narx yorlig'iga bosing — Batafsil menyu va marshrut ochiladi</span>
+      </div>
+    </section>
+
+    <!-- Bo'sh holat (Empty State) -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-state__emoji">🧐</div>
+      <h3 class="empty-state__title">Bu filtr bo'yicha joy topilmadi</h3>
+      <p class="empty-state__text">
+        Qidiruv so'zini o'zgartiring yoki narx va masofa filtrlarini kengaytiring.
+      </p>
+      <button type="button" id="resetFiltersBtn" class="empty-state__reset-btn">
+        🔄 Barcha filtrlarni tozalash
+      </button>
+    </div>
+
+    <!-- Pagination ("Yana ko'rsatish") -->
+    <div id="paginationBar" class="pagination-bar">
+      <p id="paginationInfo" class="pagination-bar__info"></p>
+      <button type="button" id="loadMoreBtn" class="pagination-bar__btn">
+        Yana ko'rsatish
+      </button>
+    </div>
+  </main>
+
+  <!-- 4. BATAFSIL MA'LUMOT UCHUN BOTTOM SHEET MODAL -->
+  <div id="bottomSheet" class="bottom-sheet" role="dialog" aria-modal="true" aria-label="Joy tafsilotlari">
+    <div id="bottomSheetBackdrop" class="bottom-sheet__backdrop"></div>
+    <div class="bottom-sheet__panel">
+      <div class="bottom-sheet__handle-bar">
+        <div class="bottom-sheet__handle"></div>
+      </div>
+      <div id="bottomSheetScroll" class="bottom-sheet__scroll"></div>
+    </div>
+  </div>
+
+  <!-- 5. TELEGRAM MINI APP BOTTOM NAVIGATION BAR -->
+  <nav class="bottom-nav" aria-label="Asosiy navigatsiya">
+    <button type="button" class="bottom-nav__item bottom-nav__item--active" data-nav-tab="home">
+      <span class="bottom-nav__icon">🍽️</span>
+      <span>Taomlar</span>
+    </button>
+    <button type="button" class="bottom-nav__item" data-nav-tab="near">
+      <span class="bottom-nav__icon">📍</span>
+      <span>Yaqinimda</span>
+    </button>
+    <button type="button" class="bottom-nav__item" data-nav-tab="map">
+      <span class="bottom-nav__icon">🗺️</span>
+      <span>Xarita</span>
+    </button>
+    <button type="button" class="bottom-nav__item" data-nav-tab="favorites">
+      <span class="bottom-nav__icon">❤️</span>
+      <span>Saqlangan</span>
+    </button>
+  </nav>
+
+  <!-- Leaflet JS (Xarita rejimi uchun) -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <!-- Asosiy ES6+ Modulli Ilova -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

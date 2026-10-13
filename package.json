@@ -1,0 +1,19 @@
+{
+  "name": "arzon-ovqat-tashkent-tma",
+  "version": "1.0.0",
+  "description": "Toshkent shahri bo'ylab eng hamyonbop va sifatli taomlarni topib beruvchi Telegram Mini App (@ovqat_byudjet_bot) va veb-ilova",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run sass:build && vite build",
+    "preview": "vite preview",
+    "sass:build": "sass scss/main.scss css/main.css --style=expanded --no-source-map",
+    "sass:watch": "sass --watch scss/main.scss:css/main.css",
+    "bot": "node bot/index.js",
+    "bot:setup": "node bot/index.js --setup-only"
+  },
+  "devDependencies": {
+    "sass": "^1.77.8",
+    "vite": "^5.4.0"
+  }
+}

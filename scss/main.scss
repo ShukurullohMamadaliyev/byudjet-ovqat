@@ -1,0 +1,11 @@
+// ==========================================================================
+// main.scss — Main SASS Entrypoint for "Arzon Ovqat Toshkent" TMA
+// Architecture: BEM + Modular Partials
+// ==========================================================================
+
+@use 'variables';
+@use 'mixins';
+@use 'base';
+@use 'layout';
+@use 'components';
+@use 'modal';

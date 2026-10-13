@@ -1,0 +1,739 @@
+// ==========================================================================
+// _components.scss — Search, Filters, Near-Me Banner, Cards & Map UI (BEM)
+// ==========================================================================
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// 1. Search Bar Component
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-2;
+
+  &__field {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    position: absolute;
+    left: 14px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 100%;
+    height: 44px;
+    padding: 0 40px 0 42px;
+    border-radius: $radius-md;
+    background: var(--surface-chip);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-size: $fs-sm;
+    font-weight: 500;
+    transition: border-color $transition-fast, background-color $transition-fast, box-shadow $transition-fast;
+
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+
+    &:focus {
+      background: var(--surface-card-solid);
+      border-color: $color-primary;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.16);
+    }
+  }
+
+  &__clear {
+    position: absolute;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: $radius-full;
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    @include flex-center;
+    @include touch-press;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity $transition-fast;
+
+    &--visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  &__near-btn {
+    height: 44px;
+    padding: 0 14px;
+    border-radius: $radius-md;
+    background: rgba($color-budget, 0.14);
+    border: 1px solid rgba($color-budget, 0.35);
+    color: $color-budget-light;
+    font-size: $fs-xs;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    @include touch-press;
+
+    &--active {
+      background: linear-gradient(135deg, $color-budget, $color-budget-dark);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: var(--shadow-glow-budget);
+    }
+  }
+}
+
+// 2. Category Filter Chips Strip
+.category-strip {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  overflow-x: auto;
+  padding: 2px 2px 4px;
+  @include hide-scrollbar;
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.48rem 0.85rem;
+    border-radius: $radius-full;
+    background: var(--surface-chip);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: $fs-xs;
+    font-weight: 600;
+    white-space: nowrap;
+    @include touch-press(0.95);
+
+    &:hover {
+      background: var(--surface-chip-hover);
+      color: var(--text-primary);
+    }
+
+    &--active {
+      background: linear-gradient(135deg, $color-primary, $color-primary-dark);
+      color: #ffffff !important;
+      border-color: transparent;
+      box-shadow: var(--shadow-glow-primary);
+    }
+  }
+
+  &__emoji {
+    font-size: 0.95rem;
+    line-height: 1;
+  }
+
+  &__count {
+    padding: 1px 6px;
+    border-radius: $radius-full;
+    background: rgba(0, 0, 0, 0.22);
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+}
+
+// 3. "Menga Yaqinlari" (Near Me) Interactive Geolocation Banner
+.near-banner {
+  @include glassmorphism(var(--surface-card), 16px, var(--border-glass));
+  border-radius: $radius-lg;
+  padding: $space-3 $space-4;
+  margin-bottom: $space-3;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba($color-budget, 0.12), transparent 55%, rgba($color-primary, 0.08));
+    pointer-events: none;
+  }
+
+  &__top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+
+    @include respond-to(md) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  &__info {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-3;
+  }
+
+  &__radar {
+    width: 42px;
+    height: 42px;
+    border-radius: $radius-full;
+    background: rgba($color-budget, 0.18);
+    border: 1px solid rgba($color-budget, 0.4);
+    color: $color-budget-light;
+    @include flex-center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    animation: pulseRadar 2.2s infinite;
+  }
+
+  &__title {
+    font-size: $fs-base;
+    font-weight: 800;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    flex-wrap: wrap;
+  }
+
+  &__coords-tag {
+    @include pill-badge(rgba($color-budget, 0.16), $color-budget-light);
+    font-family: $font-mono;
+    font-size: 0.68rem;
+  }
+
+  &__desc {
+    font-size: $fs-xs;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  &__cta-group {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    flex-wrap: wrap;
+  }
+
+  &__locate-btn {
+    padding: 0.58rem 1rem;
+    border-radius: $radius-sm;
+    background: linear-gradient(135deg, $color-budget, $color-budget-dark);
+    color: #fff;
+    font-size: $fs-xs;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: var(--shadow-glow-budget);
+    @include touch-press;
+  }
+
+  &__presets {
+    position: relative;
+    z-index: 1;
+    margin-top: $space-3;
+    padding-top: $space-2;
+    border-top: 1px dashed var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    overflow-x: auto;
+    @include hide-scrollbar;
+  }
+
+  &__preset-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  &__preset-btn {
+    padding: 0.3rem 0.65rem;
+    border-radius: $radius-full;
+    background: var(--surface-chip);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    @include touch-press;
+
+    &:hover,
+    &--active {
+      background: rgba($color-budget, 0.16);
+      border-color: rgba($color-budget, 0.45);
+      color: $color-budget-light;
+    }
+  }
+}
+
+// 4. Controls & Sorting Toolbar
+.controls-bar {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  margin-bottom: $space-3;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__filters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $space-2;
+    flex: 1;
+
+    @include respond-to(sm) {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+
+  &__select-wrap {
+    position: relative;
+    min-width: 0;
+  }
+
+  &__select {
+    width: 100%;
+    height: 38px;
+    padding: 0 26px 0 10px;
+    border-radius: $radius-sm;
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-size: $fs-xs;
+    font-weight: 600;
+    appearance: none;
+    cursor: pointer;
+    @include text-clamp(1);
+
+    &:focus {
+      border-color: $color-primary;
+    }
+
+    option {
+      background: var(--surface-card-solid);
+      color: var(--text-primary);
+    }
+  }
+
+  &__select-arrow {
+    position: absolute;
+    right: 9px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+  }
+
+  &__meta-row {
+    @include flex-between($space-2);
+  }
+
+  &__result-count {
+    font-size: $fs-xs;
+    color: var(--text-secondary);
+    font-weight: 600;
+
+    strong {
+      color: var(--text-primary);
+      font-weight: 800;
+    }
+  }
+
+  &__view-switch {
+    display: inline-flex;
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: $radius-sm;
+    padding: 2px;
+  }
+
+  &__view-btn {
+    padding: 0.32rem 0.68rem;
+    border-radius: $radius-xs;
+    font-size: $fs-xs;
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    @include touch-press;
+
+    &--active {
+      background: $color-primary;
+      color: #fff;
+    }
+  }
+}
+
+// 5. Place & Dish Card Component (BEM: .place-card)
+.place-card {
+  @include glassmorphism(var(--surface-card), 14px, var(--border-subtle));
+  border-radius: $radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-card);
+  @include interactive-card;
+  animation: fadeInUp 360ms $ease-out-expo both;
+
+  &__media {
+    position: relative;
+    height: 176px;
+    overflow: hidden;
+    background: var(--surface-elevated);
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms $ease-out-expo;
+  }
+
+  &:hover &__img {
+    transform: scale(1.05);
+  }
+
+  &__overlay-top {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    @include flex-between;
+    z-index: 2;
+  }
+
+  &__category-badge {
+    @include glassmorphism(rgba(15, 23, 42, 0.75), 10px, rgba(255, 255, 255, 0.18));
+    padding: 0.28rem 0.65rem;
+    border-radius: $radius-full;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__fav-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: $radius-full;
+    @include glassmorphism(rgba(15, 23, 42, 0.7), 10px, rgba(255, 255, 255, 0.18));
+    color: #fff;
+    @include flex-center;
+    @include touch-press(0.88);
+    font-size: 0.95rem;
+
+    &--active {
+      background: rgba(239, 68, 68, 0.9);
+      border-color: transparent;
+      color: #fff;
+    }
+  }
+
+  &__overlay-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 28px 10px 10px;
+    background: linear-gradient(to top, rgba(8, 12, 20, 0.92) 10%, rgba(8, 12, 20, 0.45) 65%, transparent);
+    @include flex-between;
+    align-items: flex-end;
+    z-index: 2;
+  }
+
+  &__price-badge {
+    background: linear-gradient(135deg, $color-budget, $color-budget-dark);
+    color: #ffffff;
+    padding: 0.35rem 0.75rem;
+    border-radius: $radius-sm;
+    font-weight: 800;
+    font-size: $fs-base;
+    letter-spacing: -0.02em;
+    box-shadow: var(--shadow-glow-budget);
+    display: inline-flex;
+     flex-direction: column;
+    line-height: 1.1;
+
+    small {
+      font-size: 0.62rem;
+      font-weight: 600;
+      opacity: 0.9;
+      text-transform: uppercase;
+    }
+  }
+
+  &__distance-badge {
+    @include glassmorphism(rgba(15, 23, 42, 0.82), 8px, rgba(255, 255, 255, 0.2));
+    padding: 0.28rem 0.6rem;
+    border-radius: $radius-full;
+    color: #f8fafc;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    &--near {
+      background: rgba($color-primary, 0.9);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  &__body {
+    padding: $space-3 $space-4 $space-4;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: $space-2;
+  }
+
+  &__header-row {
+    @include flex-between($space-2);
+    align-items: flex-start;
+  }
+
+  &__dish-title {
+    font-size: $fs-md;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.25;
+    @include text-clamp(1);
+  }
+
+  &__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: $radius-xs;
+    background: rgba($color-accent-gold, 0.15);
+    color: $color-accent-gold;
+    font-size: 0.74rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  &__place-name {
+    font-size: $fs-sm;
+    font-weight: 700;
+    color: $color-primary-light;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    @include text-clamp(1);
+  }
+
+  &__address {
+    font-size: $fs-xs;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    line-height: 1.35;
+    @include text-clamp(2);
+  }
+
+  &__tags {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+  }
+
+  &__tag {
+    padding: 2px 8px;
+    border-radius: $radius-xs;
+    background: var(--surface-chip);
+    border: 1px solid var(--border-subtle);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+
+    &--student {
+      background: rgba($color-budget, 0.12);
+      border-color: rgba($color-budget, 0.3);
+      color: $color-budget-light;
+    }
+  }
+
+  &__footer {
+    margin-top: auto;
+    padding-top: $space-3;
+    border-top: 1px solid var(--border-subtle);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-2;
+  }
+
+  &__btn {
+    height: 38px;
+    border-radius: $radius-sm;
+    font-size: $fs-xs;
+    font-weight: 700;
+    @include flex-center($gap: 6px);
+    @include touch-press(0.95);
+
+    &--route {
+      background: rgba($color-primary, 0.14);
+      border: 1px solid rgba($color-primary, 0.35);
+      color: $color-primary-light;
+
+      &:hover {
+        background: $color-primary;
+        color: #fff;
+      }
+    }
+
+    &--detail {
+      background: var(--surface-chip);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+
+      &:hover {
+        background: var(--surface-chip-hover);
+      }
+    }
+  }
+}
+
+// 6. Interactive Map Container (Leaflet Map View)
+.map-view {
+  display: none;
+  margin-top: $space-3;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-card);
+  position: relative;
+
+  &--active {
+    display: block;
+    animation: fadeInUp 300ms $ease-out-expo both;
+  }
+
+  &__canvas {
+    width: 100%;
+    height: 62vh;
+    min-height: 400px;
+    background: #131926;
+    z-index: 1;
+  }
+
+  &__legend {
+    @include glassmorphism(var(--surface-glass-heavy), 12px, var(--border-glass));
+    padding: $space-2 $space-3;
+    font-size: $fs-xs;
+    color: var(--text-secondary);
+    @include flex-between;
+    flex-wrap: wrap;
+  }
+}
+
+// Custom Leaflet Price Pin Marker
+.map-price-pin {
+  background: linear-gradient(135deg, $color-budget, $color-budget-dark);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: $radius-full;
+  font-family: $font-primary;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+  border: 2px solid #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: transform 150ms ease;
+
+  &:hover {
+    transform: scale(1.12);
+    background: linear-gradient(135deg, $color-primary, $color-primary-dark);
+    z-index: 999 !important;
+  }
+}
+
+// 7. Empty State & Toast Notification
+.empty-state {
+  @include glassmorphism(var(--surface-card), 12px, var(--border-subtle));
+  border-radius: $radius-lg;
+  padding: $space-8 $space-4;
+  text-align: center;
+  margin: $space-4 0;
+
+  &__emoji {
+    font-size: 3rem;
+    margin-bottom: $space-2;
+  }
+
+  &__title {
+    font-size: $fs-lg;
+    font-weight: 800;
+    margin-bottom: $space-1;
+  }
+
+  &__text {
+    font-size: $fs-sm;
+    color: var(--text-secondary);
+    margin-bottom: $space-4;
+  }
+
+  &__reset-btn {
+    padding: 0.65rem 1.4rem;
+    border-radius: $radius-full;
+    background: $color-primary;
+    color: #fff;
+    font-size: $fs-sm;
+    font-weight: 700;
+    @include touch-press;
+  }
+}
+
+.toast {
+  position: fixed;
+  top: calc(16px + var(--safe-top));
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  z-index: $z-toast;
+  @include glassmorphism(var(--surface-glass-heavy), 18px, var(--border-glass));
+  padding: 0.65rem 1.15rem;
+  border-radius: $radius-full;
+  box-shadow: var(--shadow-elevated);
+  font-size: $fs-xs;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 320ms $ease-spring, opacity 240ms ease;
+  opacity: 0;
+  pointer-events: none;
+
+  &--visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}

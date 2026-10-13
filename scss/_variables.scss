@@ -1,0 +1,71 @@
+// ==========================================================================
+// _variables.scss — Design Tokens & Telegram WebApp Theme Variables
+// ==========================================================================
+
+// Brand Palette (Appetizing Saffron Orange & Budget Emerald Green)
+$color-primary: #ff6b2c;
+$color-primary-light: #ff8c5a;
+$color-primary-dark: #e04f12;
+$color-primary-glow: rgba(255, 107, 44, 0.28);
+
+$color-budget: #10b981;
+$color-budget-light: #34d399;
+$color-budget-dark: #059669;
+$color-budget-glow: rgba(16, 185, 129, 0.25);
+
+$color-accent-gold: #f59e0b;
+$color-accent-blue: #3b82f6;
+$color-danger: #ef4444;
+
+// Typography
+$font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-mono: 'JetBrains Mono', monospace;
+
+// Font Sizes
+$fs-xs: 0.72rem;    // ~11.5px
+$fs-sm: 0.8125rem;  // 13px
+$fs-base: 0.9375rem;// 15px
+$fs-md: 1.0625rem;  // 17px
+$fs-lg: 1.25rem;    // 20px
+$fs-xl: 1.5rem;     // 24px
+$fs-2xl: 1.85rem;   // ~30px
+
+// Spacing Scale
+$space-1: 0.25rem;  // 4px
+$space-2: 0.5rem;   // 8px
+$space-3: 0.75rem;  // 12px
+$space-4: 1rem;     // 16px
+$space-5: 1.25rem;  // 20px
+$space-6: 1.5rem;   // 24px
+$space-8: 2rem;     // 32px
+$space-10: 2.5rem;  // 40px
+
+// Border Radius
+$radius-xs: 8px;
+$radius-sm: 12px;
+$radius-md: 16px;
+$radius-lg: 22px;
+$radius-xl: 28px;
+$radius-full: 9999px;
+
+// Transitions & Easings
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+$transition-fast: 160ms $ease-out-expo;
+$transition-base: 280ms $ease-out-expo;
+$transition-slow: 420ms $ease-out-expo;
+
+// Z-Index Layers
+$z-base: 1;
+$z-sticky: 40;
+$z-header: 50;
+$z-bottom-nav: 60;
+$z-modal-backdrop: 90;
+$z-modal-sheet: 100;
+$z-toast: 120;
+
+// Breakpoints (Mobile-first, TMA focused with desktop support)
+$bp-sm: 480px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;

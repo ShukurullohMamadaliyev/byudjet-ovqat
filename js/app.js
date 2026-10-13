@@ -20,6 +20,7 @@ import {
   setTelegramBackButton,
   openExternalMapLink
 } from './utils/telegram.js';
+import { toggleBackgroundMusic, isMusicActive } from './utils/audio.js';
 
 const PAGE_SIZE = 24;
 const FAVORITES_STORAGE_KEY = 'arzon_ovqat_favorites_v1';
@@ -35,11 +36,11 @@ const state = {
   viewMode: 'list', // 'list' | 'map'
   favoritesOnly: false,
   nearMeActive: false,
-  activePresetId: 'talabalar',
+  activePresetId: 'tinchlik',
   userCoords: {
     lat: TASHKENT_PRESETS[0].lat,
     lng: TASHKENT_PRESETS[0].lng,
-    label: 'Talabalar shaharchasi',
+    label: 'Tinchlik metro / 298-maktab',
     isRealGps: false
   },
   favorites: loadFavorites(),
@@ -332,7 +333,7 @@ function renderPlacesList() {
                 <span>${formatPriceUZS(place.price)}</span>
               </div>
               <span class="place-card__dist-pill">
-                📍 ${place.distanceText} · ${place.travelTimeText}
+                📍 ${place.distanceText} ${state.userCoords.isRealGps ? `· ${place.travelTimeText}` : `(${state.userCoords.label.split('/')[0].replace('📍', '').trim()})`}
               </span>
             </div>
           </div>
@@ -414,7 +415,7 @@ function updateLeafletMapMarkers(places) {
   if (!leafletMap) {
     leafletMap = window.L.map(dom.mapCanvas, {
       center: [state.userCoords.lat, state.userCoords.lng],
-      zoom: 13,
+      zoom: 14,
       zoomControl: true
     });
 
@@ -432,34 +433,61 @@ function updateLeafletMapMarkers(places) {
   // User Marker
   const userIcon = window.L.divIcon({
     className: '',
-    html: `<div style="width:18px;height:18px;border-radius:50%;background:#007aff;border:3px solid #fff;box-shadow:0 0 0 6px rgba(0,122,255,0.35);"></div>`,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9]
+    html: `<div style="width:20px;height:20px;border-radius:50%;background:#007aff;border:3px solid #fff;box-shadow:0 0 0 7px rgba(0,122,255,0.35);"></div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
   });
 
   window.L.marker([state.userCoords.lat, state.userCoords.lng], { icon: userIcon })
     .bindPopup(`<strong>📍 Sizning nuqtangiz:</strong><br/>${state.userCoords.label}`)
     .addTo(leafletMarkersLayer);
 
+  const catEmojis = {
+    osh: '🍛',
+    kombo: '🍱',
+    fastfood: '🌯',
+    somsa: '🥟',
+    suyuq: '🍜',
+    kechki: '🥘'
+  };
+
   // Place Pins
   places.slice(0, 100).forEach((place) => {
+    const emoji = catEmojis[place.category] || '🍽️';
     const pinIcon = window.L.divIcon({
       className: '',
-      html: `<div class="map-price-pin">${Math.round(place.price / 1000)}k</div>`,
-      iconSize: [44, 22],
-      iconAnchor: [22, 11]
+      html: `<div class="map-price-pin">${emoji} ${Math.round(place.price / 1000)}k</div>`,
+      iconSize: [52, 24],
+      iconAnchor: [26, 12]
     });
 
+    const popupHtml = `
+      <div class="map-popup">
+        <img class="map-popup__img" src="${place.image}" alt="${place.dishName}" onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80'" />
+        <div class="map-popup__body">
+          <div class="map-popup__dish">${place.dishName}</div>
+          <div class="map-popup__place">🏪 ${place.name}</div>
+          <div class="map-popup__price-row">
+            <span class="map-popup__price">${formatPriceUZS(place.price)}</span>
+            <span class="map-popup__dist">📍 ${place.distanceText}</span>
+          </div>
+          <button type="button" class="map-popup__btn" onclick="window.__openDetail(${place.id})">Batafsil ko'rish ▾</button>
+        </div>
+      </div>
+    `;
+
     const marker = window.L.marker([place.lat, place.lng], { icon: pinIcon });
-    marker.on('click', () => {
-      triggerHaptic('selection');
-      openBottomSheet(place.id);
-    });
+    marker.bindPopup(popupHtml, { maxWidth: 220, closeButton: false });
     marker.addTo(leafletMarkersLayer);
   });
 
-  leafletMap.setView([state.userCoords.lat, state.userCoords.lng], 13);
+  leafletMap.setView([state.userCoords.lat, state.userCoords.lng], 14);
 }
+
+// Window global helper for map popup clicks
+window.__openDetail = (placeId) => {
+  openBottomSheet(placeId);
+};
 
 /**
  * Bottom Sheet ochish
@@ -929,6 +957,7 @@ function initApp() {
   dom.districtChipsContainer = document.getElementById('districtChipsContainer');
   dom.presetChipsContainer = document.getElementById('presetChipsContainer');
   dom.themeBtn = document.getElementById('themeBtn');
+  dom.musicToggleBtn = document.getElementById('musicToggleBtn');
   dom.favHeaderBtn = document.getElementById('favHeaderBtn');
   dom.favCountBadge = document.getElementById('favCountBadge');
   dom.toast = document.getElementById('toast');
@@ -942,6 +971,25 @@ function initApp() {
   renderPlacesList();
   updateBottomNavActiveState();
   initPwaInstaller();
+
+  // Foydalanuvchining haqiqiy GPS koordinatasini avtomatik so'rash
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        state.userCoords = {
+          lat: Number(pos.coords.latitude.toFixed(6)),
+          lng: Number(pos.coords.longitude.toFixed(6)),
+          label: 'Aniq GPS joylashuvingiz',
+          isRealGps: true
+        };
+        state.sortBy = 'distance_asc';
+        renderPlacesList();
+        renderFilterSheetOptions();
+      },
+      () => {},
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+    );
+  }
 
   // Search input
   dom.searchInput.addEventListener('input', (e) => {
@@ -1090,6 +1138,19 @@ function initApp() {
     triggerHaptic('light');
     applyTheme(state.theme === 'dark' ? 'light' : 'dark');
   });
+
+  if (dom.musicToggleBtn) {
+    dom.musicToggleBtn.addEventListener('click', async () => {
+      triggerHaptic('light');
+      const playing = await toggleBackgroundMusic((active) => {
+        dom.musicToggleBtn.classList.toggle('header__icon-btn--music-active', active);
+        dom.musicToggleBtn.innerHTML = active ? '🎶' : '🎵';
+      });
+      dom.musicToggleBtn.classList.toggle('header__icon-btn--music-active', playing);
+      dom.musicToggleBtn.innerHTML = playing ? '🎶' : '🎵';
+      showToast(playing ? "🎵 Sokin fon musiqasi yoqildi" : "🔇 Musiqa to'xtatildi");
+    });
+  }
 
   dom.favHeaderBtn.addEventListener('click', () => {
     triggerHaptic('selection');

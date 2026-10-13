@@ -138,7 +138,7 @@ export function getUserLocation() {
  */
 export function getYandexMapsUrl(userCoords, place) {
   if (userCoords && userCoords.lat && userCoords.lng) {
-    return `https://yandex.uz/maps/?rtext=${userCoords.lat},${userCoords.lng}~${place.lat},${place.lng}&rtt=mt`;
+    return `https://yandex.uz/maps/?rtext=${userCoords.lat},${userCoords.lng}~${place.lat},${place.lng}&rtt=auto`;
   }
   return `https://yandex.uz/maps/?pt=${place.lng},${place.lat}&z=17&l=map`;
 }

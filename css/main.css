@@ -300,6 +300,21 @@ a {
   border-color: rgba(255, 59, 48, 0.4);
   color: #ff3b30;
 }
+.header__icon-btn--music-active {
+  background: rgba(255, 106, 0, 0.2);
+  border-color: rgba(255, 106, 0, 0.5);
+  animation: musicPulse 1.8s infinite ease-in-out;
+}
+@keyframes musicPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 106, 0, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 106, 0, 0);
+    transform: scale(1.08);
+  }
+}
 .header__fav-count {
   position: absolute;
   top: -2px;
@@ -1002,7 +1017,10 @@ a {
 }
 
 .map-price-pin {
-  background: #248a3d;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: linear-gradient(135deg, #34c759, #248a3d);
   color: #fff;
   padding: 3px 8px;
   border-radius: 9999px;
@@ -1011,11 +1029,87 @@ a {
   font-weight: 800;
   white-space: nowrap;
   border: 2px solid #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 .map-price-pin:hover {
+  background: linear-gradient(135deg, #ff6a00, #e65100);
+  transform: scale(1.15) translateY(-2px);
+  z-index: 1000;
+}
+
+.map-popup {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Plus Jakarta Sans", system-ui, sans-serif;
+  width: 210px;
+  padding: 0;
+}
+.map-popup__img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+}
+.map-popup__body {
+  padding: 8px 10px;
+}
+.map-popup__dish {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #111;
+  margin-bottom: 2px;
+}
+.map-popup__place {
+  font-size: 10.5px;
+  color: #666;
+  margin-bottom: 6px;
+}
+.map-popup__price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.map-popup__price {
+  font-size: 12px;
+  font-weight: 800;
+  color: #248a3d;
+}
+.map-popup__dist {
+  font-size: 10px;
+  color: #777;
+}
+.map-popup__btn {
+  width: 100%;
+  height: 30px;
+  border-radius: 999px;
   background: #ff6a00;
-  transform: scale(1.1);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(255, 106, 0, 0.3);
+}
+.map-popup__btn:hover {
+  background: #e65100;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  padding: 0 !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35) !important;
 }
 
 .empty-state {

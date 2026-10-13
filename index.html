@@ -9,6 +9,14 @@
   <meta name="theme-color" content="#0b0f17" />
   <title>Arzon Ovqat Toshkent — Talabalar va Hamyonbop Tushlik Gidi (TMA)</title>
 
+  <!-- PWA & Mobile Meta Tags -->
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" href="./icons/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Arzon Ovqat" />
+
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
@@ -40,7 +48,9 @@
     <div class="header__inner">
       <div class="header__top">
         <div class="header__brand">
-          <div class="header__logo" aria-hidden="true">🍲</div>
+          <div class="header__logo" aria-label="Arzon Ovqat Logotipi">
+            <img src="./icons/icon-192.png" alt="Arzon Ovqat" />
+          </div>
           <div class="header__title-wrap">
             <h1 class="header__title">
               Arzon Ovqat
@@ -54,6 +64,18 @@
         </div>
 
         <div class="header__actions">
+          <!-- Ilova qilib o'rnatish tugmasi -->
+          <button
+            type="button"
+            id="installAppBtn"
+            class="header__install-btn"
+            title="Telefoningizga ilova qilib o'rnatish"
+            aria-label="Ilova qilib o'rnatish"
+          >
+            <span>📲</span>
+            <span>O'rnatish</span>
+          </button>
+
           <button
             type="button"
             id="favHeaderBtn"
@@ -237,6 +259,90 @@
         <div class="bottom-sheet__handle"></div>
       </div>
       <div id="bottomSheetScroll" class="bottom-sheet__scroll"></div>
+    </div>
+  </div>
+
+  <!-- 4.1. ILOVA QILIB O'RNATISH (PWA & iOS SAFARI GUIDE) MODALI -->
+  <div id="pwaModal" class="pwa-modal" role="dialog" aria-modal="true" aria-label="Ilovani o'rnatish">
+    <div id="pwaModalBackdrop" class="pwa-modal__backdrop"></div>
+    <div class="pwa-modal__card">
+      <button type="button" id="pwaModalCloseBtn" class="pwa-modal__close-btn" aria-label="Yopish">✕</button>
+
+      <div class="pwa-modal__header">
+        <div class="pwa-modal__icon">
+          <img src="./icons/icon-192.png" alt="Arzon Ovqat Ikonkasi" />
+        </div>
+        <div>
+          <h3 class="pwa-modal__title">Arzon Ovqat Toshkent</h3>
+          <p class="pwa-modal__subtitle">Telefon ekraningizga ilova qilib o'rnating</p>
+        </div>
+      </div>
+
+      <!-- Platformani almashtirish (iPhone / Android) -->
+      <div class="pwa-modal__platform-tabs">
+        <button type="button" id="pwaTabIos" class="pwa-modal__tab-btn pwa-modal__tab-btn--active">
+          🍏 iPhone (Safari)
+        </button>
+        <button type="button" id="pwaTabAndroid" class="pwa-modal__tab-btn">
+          🤖 Android / Chrome
+        </button>
+      </div>
+
+      <!-- iPhone (Safari) uchun qo'llanma -->
+      <div id="pwaIosBody" class="pwa-modal__body">
+        <div class="pwa-modal__tg-hint">
+          <span>ℹ️</span>
+          <span><strong>Telegram ichida bo'lsangiz:</strong> Yuqoridagi 3 nuqta (···) bosib <em>«Safari orqali ochish»</em> qiling.</span>
+        </div>
+
+        <div class="pwa-modal__steps">
+          <div class="pwa-modal__step">
+            <div class="pwa-modal__step-num">1</div>
+            <div class="pwa-modal__step-content">
+              <strong>Pastki paneldagi «Ulashish» tugmasini bosing:</strong>
+              <span>Safari pastida joylashgan kvadratdan yuqoriga strelka <strong>⬆️ (Share / Поделиться)</strong> belgisini bosing.</span>
+            </div>
+          </div>
+
+          <div class="pwa-modal__step">
+            <div class="pwa-modal__step-num">2</div>
+            <div class="pwa-modal__step-content">
+              <strong>«Ekran "Domoy"ga» bandini tanlang:</strong>
+              <span>Menyu ochilgach, biroz pastga tushib <strong>«На экран "Домой"» (Add to Home Screen ➕)</strong> tugmasini tanlang.</span>
+            </div>
+          </div>
+
+          <div class="pwa-modal__step">
+            <div class="pwa-modal__step-num">3</div>
+            <div class="pwa-modal__step-content">
+              <strong>«Qo'shish» (Добавить / Add) tugmasini bosing:</strong>
+              <span>Yuqori o'ng burchakdagi tugmani bosing va ilova to'liq ekranda ishga tushadi!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Android / Chrome uchun 1 bosishda o'rnatish -->
+      <div id="pwaAndroidBody" class="pwa-modal__body" style="display: none;">
+        <button type="button" id="pwaAndroidInstallBtn" class="pwa-modal__android-cta">
+          <span>📲</span>
+          <span>Ilovani hozir o'rnatish (1 bosishda)</span>
+        </button>
+
+        <div class="pwa-modal__steps">
+          <div class="pwa-modal__step">
+            <div class="pwa-modal__step-num">💡</div>
+            <div class="pwa-modal__step-content">
+              <strong>Brauzer menyusi orqali:</strong>
+              <span>Agar tugma ishlamasa, Chrome brauzerining tepadagi 3 ta nuqtasini (⋮) bosing va <strong>«Ilovani o'rnatish» (Установить приложение)</strong> ni tanlang.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" id="pwaDismissBtn" class="pwa-modal__footer-btn">
+        Tushunarli, rahmat!
+      </button>
     </div>
   </div>
 

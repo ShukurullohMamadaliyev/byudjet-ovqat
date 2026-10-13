@@ -3,34 +3,41 @@
 Toshkent shahri bo'ylab talabalar va hamyonbop tushlik qilmoqchi bo'lganlar uchun **216+ eng arzon va sifatli ovqatlanish joylari** (Osh, Tushlik kombo, Fast food, Somsa, Suyuq ovqatlar, Kechki ovqat) xaritasi va Telegram Mini App (TMA) tizimi.
 
 - 🤖 **Telegram Bot:** [@ovqat_byudjet_bot](https://t.me/ovqat_byudjet_bot)
-- 🌐 **Veb-ilova & TMA:** [https://shukurullohmamadaliyev.github.io/byudjet-ovqat/](https://shukurullohmamadaliyev.github.io/byudjet-ovqat/)
+- 🌐 **Veb-ilova & TMA (Vercel):** [https://byudjet-ovqat.vercel.app](https://byudjet-ovqat.vercel.app)
+- 🌐 **Zaxira (GitHub Pages):** [https://shukurullohmamadaliyev.github.io/byudjet-ovqat/](https://shukurullohmamadaliyev.github.io/byudjet-ovqat/)
 
 ---
 
 ## 🚀 Asosiy Imkoniyatlar
 
-1. **⚡ Tezkor Qidiruv va 7 ta Toifa:**
+1. **📲 PWA & Smartfonga Ilova Sifatida O'rnatish:**
+   - **Android / Chrome:** 1 bosishda o'rnatish (PWA Web App).
+   - **iPhone (iOS Safari):** «Ulashish» (Share ⬆️) -> «Ekran "Domoy"ga» (Add to Home Screen ➕) orqali alohida mobil ilovaga aylanadi.
+   - Maxsus brend ikonkasi (Subyektiv / Nma Gap podkasti mezboni rasmi bilan).
+
+2. **⚡ Tezkor Qidiruv va 7 ta Toifa:**
    - Hamma taomlar, Osh, Tushlik (kombo), Fast food, Somsa, Suyuq ovqatlar, Kechki ovqat.
    - Narxlar: **15 000 – 44 000 so'm**.
    - Tumanlar (Toshkentning 12 ta tumani) va narx chegarasi (`≤ 20k`, `≤ 25k`, `≤ 30k`) filtrlari.
 
-2. **📍 «Menga yaqinlari» (Near Me) & Geolocation:**
+3. **📍 «Menga yaqinlari» (Near Me) & Geolocation:**
    - Brauzer va Telegram Geolocation API.
    - **Haversine formulasi** orqali aniq masofa (`350 m`, `1.2 km`) va yetib borish vaqti (`🚶 ~5 daq`).
    - Toshkentning talabalar markazlari bo'yicha tezkor presetlar (*Talabalar shaharchasi, TATU, Chilonzor metro, Chorsu, Buyuk Ipak Yo'li, Sergeli yarmarka*).
 
-3. **🗺️ Interaktiv Xarita (Leaflet Map):**
+4. **🗺️ Interaktiv Xarita (Leaflet Map):**
    - Ro'yxat yoki Xarita ko'rinishi.
    - 216 ta joy xaritada narx yorliqlari bilan ko'rsatiladi.
 
-4. **📋 Pastdan Chiquvchi Bottom Sheet Modal:**
+5. **📋 Pastdan Chiquvchi Bottom Sheet Modal:**
    - Taom tarkibi va grammi.
    - Boshqa arzon menyular va **Interaktiv Tushlik Hisoblagichi (Kalkulyator)**.
    - Yandex Maps, Yandex Navigator (`yandexnavi://`) va Google Maps marshrutlari.
    - Qo'ng'iroq qilish tugmasi (`tel:`).
 
-5. **🤖 Telegram Bot Integratsiyasi (@ovqat_byudjet_bot):**
-   - WebApp MenuButton, Telegram Theme (Dark/Light), Haptic Feedback, MainButton va BackButton.
+6. **🤖 Telegram Bot Integratsiyasi (@ovqat_byudjet_bot):**
+   - WebApp MenuButton to'g'ridan-to'g'ri `https://byudjet-ovqat.vercel.app` ga ulangan.
+   - Telegram Theme (Dark/Light), Haptic Feedback, MainButton va BackButton.
    - Botga GPS yuborilganda eng yaqin 5 ta joyni qaytarish.
    - `/start`, `/near`, `/top`, `/categories`, `/districts`, `/help` komandalari.
 

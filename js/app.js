@@ -1168,6 +1168,114 @@ function initApp() {
       updateBottomNavActiveState();
     });
   });
+
+  // 15. PWA va Ilova Qilib O'rnatish (iOS Safari / Android) Boshqaruvi
+  initPwaInstaller();
+}
+
+/**
+ * PWA O'rnatish va iPhone / Android Qo'llanma Modali
+ */
+function initPwaInstaller() {
+  let deferredPrompt = null;
+  const isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  // Service Worker ni ro'yxatdan o'tkazish
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch((err) => {
+        console.warn('Service worker warning:', err);
+      });
+    });
+  }
+
+  // Android Chrome beforeinstallprompt hodisasini ushlash
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    closePwaModal();
+    showToast("🎉 «Arzon Ovqat» ilovasi telefoningizga muvaffaqiyatli o'rnatildi!");
+  });
+
+  const installAppBtn = document.getElementById('installAppBtn');
+  const pwaModal = document.getElementById('pwaModal');
+  const pwaModalBackdrop = document.getElementById('pwaModalBackdrop');
+  const pwaModalCloseBtn = document.getElementById('pwaModalCloseBtn');
+  const pwaDismissBtn = document.getElementById('pwaDismissBtn');
+  const pwaTabIos = document.getElementById('pwaTabIos');
+  const pwaTabAndroid = document.getElementById('pwaTabAndroid');
+  const pwaIosBody = document.getElementById('pwaIosBody');
+  const pwaAndroidBody = document.getElementById('pwaAndroidBody');
+  const pwaAndroidInstallBtn = document.getElementById('pwaAndroidInstallBtn');
+
+  function openPwaModal() {
+    triggerHaptic('medium');
+    pwaModal.classList.add('pwa-modal--open');
+    document.body.classList.add('modal-open');
+
+    // Qurilmaga qarab to'g'ri tabni avtomatik yoqish
+    if (isIos) {
+      showIosTab();
+    } else {
+      showAndroidTab();
+    }
+  }
+
+  function closePwaModal() {
+    triggerHaptic('light');
+    pwaModal.classList.remove('pwa-modal--open');
+    if (!state.activePlace) {
+      document.body.classList.remove('modal-open');
+    }
+  }
+
+  function showIosTab() {
+    pwaTabIos.classList.add('pwa-modal__tab-btn--active');
+    pwaTabAndroid.classList.remove('pwa-modal__tab-btn--active');
+    pwaIosBody.style.display = 'flex';
+    pwaAndroidBody.style.display = 'none';
+  }
+
+  function showAndroidTab() {
+    pwaTabAndroid.classList.add('pwa-modal__tab-btn--active');
+    pwaTabIos.classList.remove('pwa-modal__tab-btn--active');
+    pwaAndroidBody.style.display = 'flex';
+    pwaIosBody.style.display = 'none';
+  }
+
+  if (installAppBtn) installAppBtn.addEventListener('click', openPwaModal);
+  if (pwaModalBackdrop) pwaModalBackdrop.addEventListener('click', closePwaModal);
+  if (pwaModalCloseBtn) pwaModalCloseBtn.addEventListener('click', closePwaModal);
+  if (pwaDismissBtn) pwaDismissBtn.addEventListener('click', closePwaModal);
+
+  if (pwaTabIos) pwaTabIos.addEventListener('click', showIosTab);
+  if (pwaTabAndroid) pwaTabAndroid.addEventListener('click', showAndroidTab);
+
+  if (pwaAndroidInstallBtn) {
+    pwaAndroidInstallBtn.addEventListener('click', async () => {
+      triggerHaptic('medium');
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showToast("📲 O'rnatilmoqda...");
+        }
+        deferredPrompt = null;
+      } else {
+        showToast("💡 Chrome menyusidagi 3 nuqta (⋮) orqali «Ilovani o'rnatish»ni tanlang");
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && pwaModal.classList.contains('pwa-modal--open')) {
+      closePwaModal();
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', initApp);

@@ -46,7 +46,7 @@ loadEnvFile();
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const WEBAPP_URL =
-  process.env.WEBAPP_URL || 'https://shukurullohmamadaliyev.github.io/byudjet-ovqat/';
+  process.env.WEBAPP_URL || 'https://byudjet-ovqat.vercel.app';
 
 if (!BOT_TOKEN) {
   console.error('❌ Xatolik: TELEGRAM_BOT_TOKEN topilmadi! .env faylini tekshiring.');

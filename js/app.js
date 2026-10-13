@@ -865,6 +865,14 @@ function initPwaInstaller() {
   if (pwaTabIos) pwaTabIos.addEventListener('click', showIosTab);
   if (pwaTabAndroid) pwaTabAndroid.addEventListener('click', showAndroidTab);
 
+  const openSafariBtn = document.getElementById('openSafariBtn');
+  if (openSafariBtn) {
+    openSafariBtn.addEventListener('click', () => {
+      triggerHaptic('medium');
+      openExternalMapLink('https://byudjet-ovqat.vercel.app');
+    });
+  }
+
   if (pwaAndroidInstallBtn) {
     pwaAndroidInstallBtn.addEventListener('click', async () => {
       triggerHaptic('medium');

@@ -1,36 +1,41 @@
 // ==========================================================================
-// _variables.scss — Design Tokens & Telegram WebApp Theme Variables
+// _variables.scss — Apple iOS Human Interface & TMA Design Tokens
 // ==========================================================================
 
-// Brand Palette (Appetizing Saffron Orange & Budget Emerald Green)
-$color-primary: #ff6b2c;
-$color-primary-light: #ff8c5a;
-$color-primary-dark: #e04f12;
-$color-primary-glow: rgba(255, 107, 44, 0.28);
+// iOS System & Accent Palette
+$color-primary: #ff6a00;           // Apple Vibrant Orange
+$color-primary-light: #ff8533;
+$color-primary-dark: #e65100;
+$color-primary-glow: rgba(255, 106, 0, 0.28);
 
-$color-budget: #10b981;
-$color-budget-light: #34d399;
-$color-budget-dark: #059669;
-$color-budget-glow: rgba(16, 185, 129, 0.25);
+$color-budget: #34c759;            // Apple iOS System Green
+$color-budget-light: #30d158;
+$color-budget-dark: #248a3d;
+$color-budget-glow: rgba(52, 199, 89, 0.28);
 
-$color-accent-gold: #f59e0b;
-$color-accent-blue: #3b82f6;
-$color-danger: #ef4444;
+$color-blue: #007aff;              // Apple iOS System Blue
+$color-accent-blue: $color-blue;
+$color-gold: #ff9500;              // Apple iOS System Yellow/Orange
+$color-accent-gold: $color-gold;
+$color-red: #ff3b30;               // Apple iOS System Red
+$color-danger: $color-red;
 
-// Typography
-$font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-$font-mono: 'JetBrains Mono', monospace;
+// Typography — Apple SF Pro Stack First
+$font-primary: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Plus Jakarta Sans', system-ui, sans-serif;
+$font-mono: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
 
-// Font Sizes
-$fs-xs: 0.72rem;    // ~11.5px
-$fs-sm: 0.8125rem;  // 13px
+// Typography Scale
+$fs-2xs: 0.6875rem; // 11px
+$fs-xs: 0.75rem;    // 12px
+$fs-sm: 0.84375rem; // 13.5px
 $fs-base: 0.9375rem;// 15px
-$fs-md: 1.0625rem;  // 17px
+$fs-md: 1.0625rem;  // 17px (iOS body standard)
 $fs-lg: 1.25rem;    // 20px
 $fs-xl: 1.5rem;     // 24px
-$fs-2xl: 1.85rem;   // ~30px
+$fs-2xl: 1.75rem;   // 28px
+$fs-3xl: 2.125rem;  // 34px (iOS Large Title)
 
-// Spacing Scale
+// Spacing Scale (8pt grid system)
 $space-1: 0.25rem;  // 4px
 $space-2: 0.5rem;   // 8px
 $space-3: 0.75rem;  // 12px
@@ -38,24 +43,25 @@ $space-4: 1rem;     // 16px
 $space-5: 1.25rem;  // 20px
 $space-6: 1.5rem;   // 24px
 $space-8: 2rem;     // 32px
-$space-10: 2.5rem;  // 40px
 
-// Border Radius
+// Border Radius (Apple Squircle Aesthetics)
 $radius-xs: 8px;
 $radius-sm: 12px;
 $radius-md: 16px;
-$radius-lg: 22px;
-$radius-xl: 28px;
+$radius-lg: 20px;
+$radius-xl: 26px;
+$radius-2xl: 32px;
 $radius-full: 9999px;
 
-// Transitions & Easings
+// Apple Spring Physics & Transitions
+$ease-ios: cubic-bezier(0.25, 1, 0.5, 1);
 $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 $ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-$transition-fast: 160ms $ease-out-expo;
-$transition-base: 280ms $ease-out-expo;
-$transition-slow: 420ms $ease-out-expo;
+$transition-fast: 160ms $ease-ios;
+$transition-base: 260ms $ease-ios;
+$transition-slow: 380ms $ease-ios;
 
-// Z-Index Layers
+// Z-Index
 $z-base: 1;
 $z-sticky: 40;
 $z-header: 50;
@@ -64,7 +70,7 @@ $z-modal-backdrop: 90;
 $z-modal-sheet: 100;
 $z-toast: 120;
 
-// Breakpoints (Mobile-first, TMA focused with desktop support)
+// Breakpoints
 $bp-sm: 480px;
 $bp-md: 768px;
 $bp-lg: 1024px;

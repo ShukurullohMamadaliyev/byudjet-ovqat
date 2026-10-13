@@ -1,37 +1,37 @@
 // ==========================================================================
-// _layout.scss — App Shell, Sticky Header, Grid & Bottom Navigation (BEM)
+// _layout.scss — Apple iOS Minimalist Header, Shell & Bottom Navigation
 // ==========================================================================
 @use 'variables' as *;
 @use 'mixins' as *;
 
 .app-shell {
   width: 100%;
-  max-width: 1240px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 $space-3;
+  padding: 0 $space-4;
 
   @include respond-to(md) {
     padding: 0 $space-6;
   }
 }
 
-// Sticky Glassmorphism Header
+// Apple Frosted Glass Header
 .header {
   position: sticky;
   top: 0;
   z-index: $z-header;
-  @include glassmorphism(var(--surface-glass), 20px, var(--border-glass));
+  @include glassmorphism(var(--surface-glass), 26px, var(--border-subtle));
   border-top: none;
   border-left: none;
   border-right: none;
   padding: $space-3 0 $space-2;
-  transition: box-shadow $transition-base, background-color $transition-base;
+  transition: background-color $transition-fast;
 
   &__inner {
     width: 100%;
-    max-width: 1240px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 $space-3;
+    padding: 0 $space-4;
 
     @include respond-to(md) {
       padding: 0 $space-6;
@@ -54,13 +54,10 @@
     width: 44px;
     height: 44px;
     border-radius: $radius-sm;
-    background: linear-gradient(135deg, $color-primary, #ff3e1d);
-    @include flex-center;
-    font-size: 1.35rem;
-    box-shadow: var(--shadow-glow-primary);
-    flex-shrink: 0;
     overflow: hidden;
-    border: 2px solid $color-primary;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
 
     img {
       width: 100%;
@@ -75,8 +72,8 @@
 
   &__title {
     font-size: $fs-md;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: -0.025em;
     line-height: 1.2;
     display: flex;
     align-items: center;
@@ -84,31 +81,33 @@
     @include text-clamp(1);
   }
 
-  &__badge-tma {
-    @include pill-badge(rgba($color-budget, 0.16), $color-budget-light);
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    border: 1px solid rgba($color-budget, 0.3);
-  }
-
-  &__subtitle {
-    font-size: $fs-xs;
-    color: var(--text-secondary);
-    display: flex;
+  &__location-pill {
+    display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    margin-top: 2px;
+    gap: 5px;
+    font-size: $fs-2xs;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--surface-chip);
+    padding: 2px 8px;
+    border-radius: $radius-full;
+    margin-top: 3px;
+    cursor: pointer;
+    @include touch-press;
     @include text-clamp(1);
+
+    &:hover {
+      color: var(--text-primary);
+    }
   }
 
   &__status-dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: $radius-full;
-    background-color: $color-budget;
+    background: $color-budget;
     display: inline-block;
-    animation: pulseRadar 2s infinite;
+    animation: pulseDot 2s infinite ease-in-out;
   }
 
   &__actions {
@@ -119,20 +118,20 @@
   }
 
   &__install-btn {
-    height: 40px;
+    height: 36px;
     padding: 0 12px;
-    border-radius: $radius-sm;
+    border-radius: $radius-full;
     background: linear-gradient(135deg, $color-primary, $color-primary-dark);
-    color: #fff;
+    color: #ffffff;
     font-size: $fs-xs;
-    font-weight: 800;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    box-shadow: var(--shadow-glow-primary);
+    box-shadow: 0 4px 14px rgba($color-primary, 0.35);
     white-space: nowrap;
-    @include touch-press(0.95);
-    animation: pulseOrange 2.6s infinite;
+    @include touch-press;
 
     &:hover {
       filter: brightness(1.08);
@@ -141,55 +140,54 @@
 
   &__icon-btn {
     position: relative;
-    width: 40px;
-    height: 40px;
-    border-radius: $radius-sm;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-full;
     background: var(--surface-chip);
     border: 1px solid var(--border-subtle);
     @include flex-center;
     @include touch-press;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    color: var(--text-primary);
 
     &:hover {
-      background: var(--surface-chip-hover);
+      background: rgba(255, 255, 255, 0.12);
     }
 
     &--active {
-      background: rgba($color-primary, 0.16);
-      border-color: rgba($color-primary, 0.45);
-      color: $color-primary;
+      background: rgba($color-red, 0.16);
+      border-color: rgba($color-red, 0.4);
+      color: $color-red;
     }
   }
 
   &__fav-count {
     position: absolute;
-    top: -4px;
-    right: -4px;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
+    top: -2px;
+    right: -2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
     border-radius: $radius-full;
     background: $color-primary;
-    color: #fff;
-    font-size: 0.65rem;
+    color: #ffffff;
+    font-size: 0.6rem;
     font-weight: 800;
     @include flex-center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   }
 }
 
-// Main Content Section
+// Main Content
 .main-content {
   padding-top: $space-3;
   padding-bottom: $space-6;
 }
 
-// Responsive Places Grid
+// Places Grid (Apple App Store / Airbnb Style)
 .places-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: $space-4;
-  margin-top: $space-3;
 
   @include respond-to(sm) {
     grid-template-columns: repeat(2, 1fr);
@@ -199,71 +197,64 @@
     grid-template-columns: repeat(3, 1fr);
     gap: $space-5;
   }
-
-  @include respond-to(xl) {
-    grid-template-columns: repeat(4, 1fr);
-  }
 }
 
-// Load More / Pagination Container
+// Pagination
 .pagination-bar {
   margin-top: $space-6;
   @include flex-center(column, $space-2);
   text-align: center;
 
   &__info {
-    font-size: $fs-sm;
+    font-size: $fs-xs;
     color: var(--text-secondary);
   }
 
   &__btn {
-    padding: 0.85rem 2rem;
+    padding: 0.75rem 1.8rem;
     border-radius: $radius-full;
-    background: linear-gradient(135deg, $color-primary, $color-primary-dark);
-    color: #fff;
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
     font-weight: 700;
-    font-size: $fs-base;
-    box-shadow: var(--shadow-glow-primary);
+    font-size: $fs-sm;
     @include touch-press;
-    display: inline-flex;
-    align-items: center;
-    gap: $space-2;
 
     &:hover {
-      filter: brightness(1.08);
+      background: var(--surface-elevated);
     }
   }
 }
 
-// Floating Bottom Glass Navigation Bar (Mobile / TMA First)
+// iOS Native Floating Glass Tab Bar
 .bottom-nav {
   position: fixed;
-  bottom: calc(10px + var(--safe-bottom));
+  bottom: calc(8px + var(--safe-bottom));
   left: 50%;
   transform: translateX(-50%);
   z-index: $z-bottom-nav;
   width: calc(100% - 24px);
-  max-width: 480px;
-  @include glassmorphism(var(--surface-glass-heavy), 22px, var(--border-glass));
-  border-radius: $radius-xl;
-  padding: 0.4rem;
-  box-shadow: var(--shadow-elevated);
+  max-width: 440px;
+  @include glassmorphism(var(--surface-glass-heavy), 28px, var(--border-glass));
+  border-radius: $radius-2xl;
+  padding: 4px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.25rem;
+  gap: 2px;
 
   &__item {
-    @include flex-center(column, 3px);
-    padding: 0.45rem 0.25rem;
-    border-radius: $radius-lg;
+    @include flex-center(column, 2px);
+    padding: 0.5rem 0.25rem;
+    border-radius: $radius-xl;
     color: var(--text-secondary);
-    font-size: 0.7rem;
+    font-size: 0.6875rem;
     font-weight: 600;
-    @include touch-press(0.94);
+    @include touch-press(0.95);
 
     &--active {
-      background: rgba($color-primary, 0.15);
-      color: $color-primary;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
       font-weight: 700;
     }
   }
